@@ -1,4 +1,4 @@
-name: CI
+name: deploy
 on: [push]
 jobs:
   build:
@@ -14,4 +14,4 @@ jobs:
     - name: Build static site
       run: npm install && npm run build
     - name: Deploy client app to S3 bucket
-      run: aws s3 sync ./dist/ s3://${S3_BUCKET} --delete
+      run: aws s3 sync ./dist/ s3://${{ secrets.S3_BUCKET }} --delete
