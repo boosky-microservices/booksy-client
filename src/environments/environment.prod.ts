@@ -7,5 +7,5 @@ export const environment = {
     BASE_URL: 'https://booksy-api.herokuapp.com',
     SCOPE: 'openid profile email'
   },
-  API_URL: 'https://booksy-api.herokuapp.com/api/v1/'
+  API_URL: 'https://33gssbff04.execute-api.eu-west-3.amazonaws.com/dev'
 };

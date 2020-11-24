@@ -27,7 +27,7 @@ export class BooksComponent implements OnInit {
     this.bookService.getRecommandedBooks();
     this.bookService.recommandedBooks$.subscribe(data => {
       if (!data) return;
-      this.recommandedBooks = data.data.volumes;
+      this.recommandedBooks = data;
       this.waitingForRecommanded = false;
     });
   }

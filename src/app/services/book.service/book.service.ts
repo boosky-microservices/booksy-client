@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../auth.service';
+import {Injectable} from '@angular/core';
+import {Observable, BehaviorSubject} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {AuthService} from '../auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +12,22 @@ export class BookService {
   bookWithRating$ = new BehaviorSubject<any>(null);
   popularBooks$ = new BehaviorSubject<any>(null);
   recommandedBooks$ = new BehaviorSubject<any>(null);
+  reviews$ = new BehaviorSubject<any>(null);
 
-  constructor(private auth: AuthService, private httpClient: HttpClient) { }
+  constructor(private auth: AuthService, private httpClient: HttpClient) {
+  }
 
   private get _authHeader(): string {
     return `Bearer ${this.auth.accessToken}`;
   }
+
   /**
    * Get the project list.
    */
   getBooks(query): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.API_URL + 'books?q=' + query);
+    return this.httpClient.get<any[]>(environment.API_URL + '/books?q=' + query);
   }
+
   /**
    * Get the book by id.
    */
@@ -32,11 +36,11 @@ export class BookService {
     this.auth.accessToken$.subscribe(t => {
       const ridQuery = rid ? '?rid=' + rid : '';
       if (!t) {
-        return this.httpClient.get<any>(`${environment.API_URL}books/${id}${ridQuery}`).subscribe(data => {
+        return this.httpClient.get<any>(`${environment.API_URL}/books/${id}${ridQuery}`).subscribe(data => {
           this.book$.next(data);
         });
       } else {
-        return this.httpClient.get<any>(`${environment.API_URL}books/${id}${ridQuery}`, {
+        return this.httpClient.get<any>(`${environment.API_URL}/books/${id}${ridQuery}`, {
           headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
         }).subscribe(data => {
           this.book$.next(data);
@@ -46,16 +50,35 @@ export class BookService {
   }
 
   /**
-     * Get the book by id with rating .
-     */
+   * get book reviews
+   */
+  getBookReviews(id): void {
+    this.auth.accessToken$.subscribe(t => {
+      if (!t) {
+        return this.httpClient.get<any>(`${environment.API_URL}/reviews/` + id).subscribe(data => {
+          this.reviews$.next(data);
+        });
+      } else {
+        return this.httpClient.get<any>(`${environment.API_URL}/recommendations/` + id, {
+          headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
+        }).subscribe(data => {
+          this.reviews$.next(data);
+        });
+      }
+    });
+  }
+
+  /**
+   * Get the book by id with rating .
+   */
   getBookWithRating(id): void {
     this.auth.accessToken$.subscribe(t => {
       if (!t) {
-        return this.httpClient.get<any>(environment.API_URL + 'books/' + id + '?short=true').subscribe(data => {
+        return this.httpClient.get<any>(environment.API_URL + '/books/' + id + '?short=true').subscribe(data => {
           this.bookWithRating$.next(data);
         });
       } else {
-        return this.httpClient.get<any>(environment.API_URL + 'books/' + id + '?short=true', {
+        return this.httpClient.get<any>(environment.API_URL + '/books/' + id + '?short=true', {
           headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
         }).subscribe(data => {
           this.bookWithRating$.next(data);
@@ -65,20 +88,20 @@ export class BookService {
   }
 
   /**
-     * add a review to the book.
-     */
+   * add a review to the book.
+   */
   addReview(idBook, review, rid = null) {
     const ridQuery = rid ? '?rid=' + rid : '';
     return this.httpClient.put(environment.API_URL + 'books/' + idBook + '/reviews/', review,
-      { headers: new HttpHeaders().set('Authorization', this._authHeader) });
+      {headers: new HttpHeaders().set('Authorization', this._authHeader)});
   }
 
   /**
    * delete a review.
    */
   deleteReview(idBook) {
-    return this.httpClient.delete(environment.API_URL + 'books/' + idBook + '/reviews/',
-      { headers: new HttpHeaders().set('Authorization', this._authHeader) });
+    return this.httpClient.delete(environment.API_URL + '/books/' + idBook + '/reviews/',
+      {headers: new HttpHeaders().set('Authorization', this._authHeader)});
   }
 
   /**
@@ -87,11 +110,11 @@ export class BookService {
   getRecommandedBooks(): void {
     this.auth.accessToken$.subscribe(t => {
       if (!t) {
-        return this.httpClient.get<any>(`${environment.API_URL}books/recommendations`).subscribe(data => {
+        return this.httpClient.get<any>(`${environment.API_URL}/recommendations`).subscribe(data => {
           this.recommandedBooks$.next(data);
         });
       } else {
-        return this.httpClient.get<any>(`${environment.API_URL}books/recommendations`, {
+        return this.httpClient.get<any>(`${environment.API_URL}/recommendations`, {
           headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
         }).subscribe(data => {
           this.recommandedBooks$.next(data);
@@ -107,11 +130,11 @@ export class BookService {
   getPopularBooks(): void {
     this.auth.accessToken$.subscribe(t => {
       if (!t) {
-        return this.httpClient.get<any>(`${environment.API_URL}books/popular`).subscribe(data => {
+        return this.httpClient.get<any>(`${environment.API_URL}/books/popular`).subscribe(data => {
           this.popularBooks$.next(data);
         });
       } else {
-        return this.httpClient.get<any>(`${environment.API_URL}books/popular`, {
+        return this.httpClient.get<any>(`${environment.API_URL}/books/popular`, {
           headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
         }).subscribe(data => {
           this.popularBooks$.next(data);

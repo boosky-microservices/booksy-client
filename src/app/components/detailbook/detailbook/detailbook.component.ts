@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { NgForm } from '@angular/forms';
-import { BookService } from '../../../services/book.service/book.service';
-import { AuthService } from '../../../services/auth.service';
-import { BookshelfService } from '../../../services/bookshelf.service/bookshelf.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {NgForm} from '@angular/forms';
+import {BookService} from '../../../services/book.service/book.service';
+import {AuthService} from '../../../services/auth.service';
+import {BookshelfService} from '../../../services/bookshelf.service/bookshelf.service';
 
 @Component({
   selector: 'app-detailbook',
@@ -27,8 +27,10 @@ export class DetailbookComponent implements OnInit, OnDestroy {
   errorMessage: any;
   error: boolean;
   rid: string;
+
   constructor(private router: ActivatedRoute, private navigateRouter: Router, private bookService: BookService
-    ,         private shelfService: BookshelfService, public auth: AuthService) { }
+    , private shelfService: BookshelfService, public auth: AuthService) {
+  }
 
   ngOnInit() {
     this.router.params.subscribe(
@@ -51,16 +53,26 @@ export class DetailbookComponent implements OnInit, OnDestroy {
       this.shelves = data;
     });
   }
+
   getBook(id) {
     this.bookService.getBook(id, this.rid);
+    this.bookService.getBookReviews(id);
     this.subscription = this.bookService.book$.asObservable().subscribe(data => {
-      if (!data) { return; }
-      this.book = data;
-      this.myReview = data.reviews.find(r => (this.auth.userProfile && r.writer.name === this.auth.userProfile.name));
-      if (this.myReview !== undefined) {
-        this.model.content = this.myReview.reviewText;
-        this.model.rating = parseInt(this.myReview.rating);
+      if (!data) {
+        return;
       }
+      this.book = data;
+      this.bookService.reviews$.subscribe(reviews => {
+        if (!reviews) {
+          return;
+        }
+        this.book.reviews = reviews.data;
+      });
+      /*      this.myReview = data.reviews.find(r => (this.auth.userProfile && r.writer.name === this.auth.userProfile.name));
+            if (this.myReview !== undefined) {
+              this.model.content = this.myReview.reviewText;
+              this.model.rating = parseInt(this.myReview.rating);
+            }*/
       if (this.book.volume.volumeInfo.description !== undefined) {
         this.book.volume.volumeInfo.description = this.book.volume.volumeInfo.description.replace(/<\/?[^>]+>/ig, ' ');
       }
@@ -68,8 +80,12 @@ export class DetailbookComponent implements OnInit, OnDestroy {
 
     });
   }
+
   createReview(form: NgForm) {
-    this.bookService.addReview(this.bookId, { reviewText: form.value.content, rating: this.model.rating }).subscribe(data => {
+    this.bookService.addReview(this.bookId, {
+      reviewText: form.value.content,
+      rating: this.model.rating
+    }).subscribe(data => {
       this.getBook(this.bookId);
       form.reset();
     });
@@ -91,7 +107,9 @@ export class DetailbookComponent implements OnInit, OnDestroy {
     this.test = null;
     this.bookService.getBookWithRating(id);
     this.bookService.bookWithRating$.subscribe(data => {
-      if (!data) { return; }
+      if (!data) {
+        return;
+      }
       this.test = data;
       if (this.test.volume.volumeInfo.description !== undefined) {
         this.test.volume.volumeInfo.description = this.test.volume.volumeInfo.description.replace(/<\/?[^>]+>/ig, ' ');
@@ -121,12 +139,12 @@ export class DetailbookComponent implements OnInit, OnDestroy {
 
   addBookToShelf(idShelf) {
     this.shelfService.addBookToShelf(idShelf, this.bookId).subscribe(data => {
-      this.successMessage = true;
-      setTimeout(() => {
-        this.successMessage = false;
-      }, 2000);
+        this.successMessage = true;
+        setTimeout(() => {
+          this.successMessage = false;
+        }, 2000);
 
-    },
+      },
       err => {
         this.error = true;
         this.errorMessage = err.error.errors[0];
