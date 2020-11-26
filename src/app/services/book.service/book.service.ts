@@ -92,7 +92,7 @@ export class BookService {
    */
   addReview(idBook, review, rid = null) {
     const ridQuery = rid ? '?rid=' + rid : '';
-    return this.httpClient.put(environment.API_URL + 'books/' + idBook + '/reviews/', review,
+    return this.httpClient.put(environment.API_URL + '/books/' + idBook + '/reviews/', review,
       {headers: new HttpHeaders().set('Authorization', this._authHeader)});
   }
 

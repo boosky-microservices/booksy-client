@@ -119,7 +119,7 @@ export class AuthService {
   }
 
   sendAuth(profile) {
-    return this.httpClient.post(environment.API_URL + 'user/login', profile, {
+    return this.httpClient.post(environment.API_URL + '/user/login', profile, {
       headers: new HttpHeaders().set('Authorization', this._authHeader)
     }).toPromise();
   }

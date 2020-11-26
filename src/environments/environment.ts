@@ -7,5 +7,5 @@ export const environment = {
     BASE_URL: 'http://booksy-angular-client.s3-website.eu-west-3.amazonaws.com',
     SCOPE: 'openid profile email'
   },
-  API_URL: 'https://33gssbff04.execute-api.eu-west-3.amazonaws.com/dev/'
+  API_URL: 'https://33gssbff04.execute-api.eu-west-3.amazonaws.com/dev'
 };
