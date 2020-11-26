@@ -65,7 +65,7 @@ export class BookshelfService {
      *
      */
   createShelf(shelf): Observable<any> {
-    return this.httpClient.put(environment.API_URL + '/bookshelves', shelf, {
+    return this.httpClient.post(environment.API_URL + '/bookshelves', shelf, {
       headers: new HttpHeaders().set('Authorization', this._authHeader)
     });
   }
