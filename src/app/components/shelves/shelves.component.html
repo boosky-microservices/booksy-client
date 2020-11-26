@@ -25,12 +25,12 @@
             <li *ngFor="let shelf of shelves" routerLinkActive="active-shelf"
                 style="border-style: none; border-bottom-style: solid;"
                 class="list-group-item d-flex justify-content-between align-items-center">
-                <a href="javascript:void(0)" routerLink="{{shelf?._id}}">{{shelf.name | titlecase}}
+                <a href="javascript:void(0)" routerLink="{{shelf?.name}}">{{shelf.name | titlecase}}
                     <span style="font-weight: bold; float: left; margin-right: 5pt; padding-left: 2pt;"
-                        class="badge badge-primary badge-pill">{{shelf?.books.length}}</span>
+                        class="badge badge-primary badge-pill">{{shelf?.bookIds.length}}</span>
                 </a>
                 <span *ngIf="!['read','to read','reading'].includes(shelf?.name)" style="cursor: pointer;"
-                    (click)="setIDtoDelete(shelf._id)" data-toggle="modal" data-target="#exampleModal"
+                    (click)="setIDtoDelete(shelf.name)" data-toggle="modal" data-target="#exampleModal"
                     class="badge badge-danger badge-pill"><i class="fa fa-times"></i></span>
             </li>
         </ul>
