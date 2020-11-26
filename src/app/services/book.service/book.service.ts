@@ -59,7 +59,7 @@ export class BookService {
           this.reviews$.next(data);
         });
       } else {
-        return this.httpClient.get<any>(`${environment.API_URL}/recommendations/` + id, {
+        return this.httpClient.get<any>(`${environment.API_URL}/reviews/` + id, {
           headers: new HttpHeaders().set('Authorization', 'Bearer ' + t)
         }).subscribe(data => {
           this.reviews$.next(data);
