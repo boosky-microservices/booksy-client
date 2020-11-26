@@ -35,7 +35,7 @@ export class ShelvesComponent implements OnInit {
     })
   }
   createShelf(form: NgForm) {
-    if (form.value.name === undefined || form.value.name.length < 3 || form.value.name.length > 32) {
+    if (form.value.bookshelfName === undefined || form.value.bookshelfName.length < 3 || form.value.bookshelfName.length > 32) {
       this.validationError = true;
       return;
     }
