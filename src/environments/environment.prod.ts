@@ -3,7 +3,7 @@ export const environment = {
   AUTH: {
     CLIENT_ID: 'I67fLdffMBUg0VceI5Uv7nDnrxosWXAT',
     DOMAIN: 'dev-ohvjdegt.eu.auth0.com',
-    AUDIENCE: 'http://booksy-angular-client.s3-website.eu-west-3.amazonaws.com/',
+    AUDIENCE: 'https://booksy-api.herokuapp.com/',
     BASE_URL: 'http://booksy-angular-client.s3-website.eu-west-3.amazonaws.com',
     SCOPE: 'openid profile email'
   },
